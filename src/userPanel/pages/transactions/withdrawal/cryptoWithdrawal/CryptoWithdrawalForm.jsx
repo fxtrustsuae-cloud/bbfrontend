@@ -1,0 +1,179 @@
+// import Selector from "../../../../components/Selector"
+import Selector from "../../../../userPanelComponent/Selector"
+// import { useCryptoWithdrawMutation } from '../../../../globalState/userState/userStateApis';
+import { Button, Stack, Typography, TextField, InputLabel, Box, Container } from '@mui/material'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useDispatch, useSelector } from 'react-redux';
+// import { setNotification } from '../../../../globalState/notificationState/notificationStateSlice';
+import { setNotification } from "../../../../../globalState/notification/notificationSlice"
+// import { useBankWithdrawMutation } from '../../../../globalState/userState/userStateApis';
+// import { getWithdrawalSchema } from './bankWithdrawalFormSchema';
+import { cryptoWithdrawalSchema } from './cryptoWithdrawalSchema';
+// import { useGetUserDataQuery } from '../../../../globalState/userState/userStateApis';
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
+const networks = [
+    // {
+    //     icon: "token-branded:binance",
+    //     name: "Binance (BP 20)"
+    // },
+    {
+        image: "/transactionIcons/USDT_TRC20.svg",
+        name: "TRON"
+    },
+]
+
+
+function CryptoWithdrawalForm() {
+
+    const [searchParams, setSearchParams] = useSearchParams()
+
+    const amountParam = searchParams.get("amount")
+    const walletAddressParam = searchParams.get("walletAddress")
+    const networkParam = searchParams.get("network")
+    // const remarkParam = searchParams.get("remark")
+    const isAmountAndRemarkSubmittedParam = searchParams.get("isAmountAndRemarkSubmitted") || false
+
+    const dispatch = useDispatch();
+
+    const { token } = useSelector((state) => state.auth);
+    // const { refetch, data } = useGetUserDataQuery(undefined, {
+    //     skip: !token,
+    //     refetchOnMountOrArgChange: true,
+    // })
+
+    // const securityMethod = data?.data?.userData?.securityMethods
+
+    // const schema = useMemo(
+    //     () => cryptoWithdrawalSchema({ securityMethod, isAmountAndRemarkSubmittedParam }),
+    //     [securityMethod, isAmountAndRemarkSubmittedParam]
+    // );
+
+    // const defaultValues = {
+    //     amount: "",
+    //     code: "",
+    //     remark: ""
+    // };
+
+    const defaultValues = {
+        network: "",
+        walletAddress: "",
+        amount: "",
+        code: "",
+        // image: null,
+    };
+
+    const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
+        // resolver: zodResolver(schema),
+        resolver: zodResolver(cryptoWithdrawalSchema),
+        defaultValues,
+    });
+
+    // const [cryptoWithdraw, { isLoading }] = useCryptoWithdrawMutation();
+
+    const onSubmit = async (data) => {
+        try {
+
+            const finalData = !isAmountAndRemarkSubmittedParam ? data : { amount: amountParam, walletAddress: walletAddressParam, network: networkParam, code: data?.code }
+
+            const response = await cryptoWithdraw(finalData).unwrap();
+            if (response?.status) {
+                if (!isAmountAndRemarkSubmittedParam && securityMethod !== "GOOGLE-AUTH") {
+                    setSearchParams({
+                        amount: data?.amount,
+                        walletAddress: data?.walletAddress,
+                        network: data?.network,
+                        isAmountAndRemarkSubmitted: true
+                    });
+                } else {
+                    const newParams = new URLSearchParams(searchParams);
+                    newParams.delete("amount");
+                    newParams.delete("walletAddress");
+                    newParams.delete("network");
+                    // newParams.delete("remark");
+                    newParams.delete("isAmountAndRemarkSubmitted")
+                    setSearchParams(newParams);
+                }
+                dispatch(setNotification({ open: true, message: response?.message, severity: "success" }));
+                reset(defaultValues);
+                refetch()
+            }
+        } catch (error) {
+            if (!error?.data?.status) {
+                dispatch(setNotification({ open: true, message: error?.data?.message || "Failed to submit. Please try again later.", severity: "error" }));
+            }
+        }
+    };
+
+    return (
+        <Stack>
+            <Stack
+                component={"form"}
+                onSubmit={handleSubmit(onSubmit)}
+                spacing={2}
+            >
+                {/* {(securityMethod == "GOOGLE-AUTH" || !isAmountAndRemarkSubmittedParam)
+                    && */}
+                <>
+                    <Box>
+                        <InputLabel sx={{ mb: ".5rem" }}>Select Network *</InputLabel>
+                        <Selector
+                            items={networks}
+                            value={watch("network")}
+                            onChange={(e) => setValue("network", e.target.value, { shouldValidate: true })}
+                            shouldBeFullWidth={true}
+                        />
+                        {errors.network && <Typography color="error" fontSize={"14px"}>{errors.network.message}</Typography>}
+                    </Box>
+                    <Box>
+                        <InputLabel sx={{ mb: ".5rem" }}>Withdraw To *</InputLabel>
+                        <TextField
+                            {...register("walletAddress")}
+                            size='small' multiline fullWidth placeholder="Enter Wallet Address" variant="outlined" />
+                        {errors.walletAddress && <Typography color="error" fontSize={"14px"}>{errors.walletAddress.message}</Typography>}
+                    </Box>
+                    <Box>
+                        <InputLabel sx={{ mb: ".5rem" }}>Amount *</InputLabel>
+                        <TextField {...register("amount")}
+                            size='small' fullWidth placeholder="Enter Amount" variant="outlined" />
+                        {errors.amount && <Typography color="error" fontSize={"14px"}>{errors.amount.message}</Typography>}
+                    </Box>
+                </>
+                {/* } */}
+                {/* {(securityMethod == "GOOGLE-AUTH" || isAmountAndRemarkSubmittedParam) &&  */}
+                <Box>
+                    <InputLabel sx={{ mb: ".5rem" }}>Code *</InputLabel>
+                    <TextField {...register("code")}
+                        size='small' fullWidth placeholder="Enter Amount" variant="outlined" />
+                    {errors.code && <Typography color="error" fontSize={"14px"}>{errors.code.message}</Typography>}
+                </Box>
+                {/* } */}
+                <Stack sx={{ p: "1rem", my: "2rem", bgcolor: "#f8f9f9", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Typography color='black'>To be withdrawn</Typography>
+                    <Typography fontWeight={"bold"} fontSize={"2rem"} color='black'>{watch("amount") || amountParam || "0"}<Typography fontWeight={"bold"} component={"span"} fontSize={"1.2rem"}>.00 USD</Typography></Typography>
+                </Stack>
+                <Button
+                    type='submit'
+                    variant='contained'
+                    // disabled={isLoading}
+                    sx={{
+                        textTransform: "capitalize",
+                        boxShadow: "none",
+                        color: "white",
+                        mt: '1.5rem',
+                        alignSelf: "self-start",
+                        "&:hover": {
+                            boxShadow: "none",
+                        },
+                    }}
+                >
+                    Submit
+                </Button>
+            </Stack>
+        </Stack>
+    );
+}
+
+export default CryptoWithdrawalForm;

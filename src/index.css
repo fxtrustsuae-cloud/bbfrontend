@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* body {
+  overflow-x: hidden;
+} */
+
+/* body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+
+  /* Background from Future Roadmap Highlights */
+/* background: linear-gradient(135deg, #000000 0%, #1f063d 85%); */
+/* color: white; */
+/* optional: ensures text is readable */
+/* } */
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+
+  position: relative;
+  /* needed so ::before can layer properly if using z-index */
+  background: linear-gradient(135deg, #000000 0%, #1f063d 85%);
+  color: white;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  /* or absolute if you prefer but fixed keeps it with viewport */
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(241, 184, 17, 0.08), transparent 60%),
+    radial-gradient(circle at 80% 20%, rgba(241, 184, 17, 0.04), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  /* behind normal content */
+}
+
+
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f1b811;
+  border-radius: 10px;
+}

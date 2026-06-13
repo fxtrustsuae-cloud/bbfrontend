@@ -1,0 +1,42 @@
+export const stakingMatchingIncomeTableRowData = [
+    {
+        "S/N": "1",
+        "User ID": "ROBO219473",
+        "Name": "$5",
+        "Income": "$125",
+        "Level": "$125",
+        "Date": "05-10-2024",
+    },
+    {
+        "S/N": "1",
+        "User ID": "ROBO219473",
+        "Name": "$5",
+        "Income": "$125",
+        "Level": "$125",
+        "Date": "05-10-2024",
+    },
+    {
+        "S/N": "1",
+        "User ID": "ROBO219473",
+        "Name": "$5",
+        "Income": "$125",
+        "Level": "$125",
+        "Date": "05-10-2024",
+    },
+    {
+        "S/N": "1",
+        "User ID": "ROBO219473",
+        "Name": "$5",
+        "Income": "$125",
+        "Level": "$125",
+        "Date": "05-10-2024",
+    },
+    {
+        "S/N": "1",
+        "User ID": "ROBO219473",
+        "Name": "$5",
+        "Income": "$125",
+        "Level": "$125",
+        "Date": "05-10-2024",
+    },
+]
