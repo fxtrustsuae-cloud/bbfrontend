@@ -1,0 +1,22 @@
+.react-tel-input .special-label {
+    display: none !important;
+}
+
+.react-tel-input .form-control {
+    border-color: white !important;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.react-tel-input .form-control:hover {
+    border-color: #f1b811 !important;
+}
+
+.react-tel-input .form-control:focus {
+    border-color: #f1b811 !important;
+    box-shadow: none
+}
+
+.react-tel-input .flag-dropdown {
+    background: transparent !important;
+    border-color: white !important;
+}
