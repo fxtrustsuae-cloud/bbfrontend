@@ -16,7 +16,8 @@ import { useState } from 'react';
 const walletType = [
     { label: "Main wallet", value: "MAIN" },
     // { label: "Affliate wallet", value: "AFFLIATE" },
-    { label: "Coin wallet", value: "COIN" }
+    { label: "Coin wallet", value: "COIN" },
+    { label: "Trade wallet", value: "TRADE" } // <-- NAYA OPTION ADD KIYA HAI
 ];
 
 function WithdrawAmount() {
@@ -95,7 +96,14 @@ function WithdrawAmount() {
                             <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
                                 <InputLabel sx={{ mb: ".5rem" }}>Amount to withdraw *</InputLabel>
                                 <InputLabel sx={{ mb: ".5rem" }}>
-                                    Balance: $ {watch("wallet") === "MAIN" ? (userDataLoading ? <Skeleton /> : userData?.BUSDBalance) : watch("wallet") === "AFFLIATE" ? (userDataLoading ? <Skeleton /> : userData?.AFFLIATEBalance) : watch("wallet") === "COIN" ? (userDataLoading ? <Skeleton /> : userData?.COINBalance) : 0}
+                                    {/* NAYE BALANCE KI CONDITION YAHAN ADD KI HAI */}
+                                    Balance: $ {
+                                        watch("wallet") === "MAIN" ? (userDataLoading ? <Skeleton /> : userData?.BUSDBalance) : 
+                                        watch("wallet") === "AFFLIATE" ? (userDataLoading ? <Skeleton /> : userData?.AFFLIATEBalance) : 
+                                        watch("wallet") === "COIN" ? (userDataLoading ? <Skeleton /> : userData?.COINBalance) : 
+                                        watch("wallet") === "TRADE" ? (userDataLoading ? <Skeleton /> : userData?.TRADEBalance) : 
+                                        0
+                                    }
                                 </InputLabel>
                             </Stack>
                             <TextField

@@ -5,7 +5,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { userNavigation } from "./Navigation";
+import { userNavigation} from "./Navigation";
 import RecursiveNavigation from "./RecursiveNavigation";
 import { Link, Outlet, matchPath } from "react-router-dom";
 import Footer from '../footer/Footer';
